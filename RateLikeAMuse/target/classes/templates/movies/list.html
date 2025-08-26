@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filmes - RateLikeAMuse</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="black-background">
+    <a th:href="@{/profile}" class="perfil-btn">Meu Perfil</a>
+    
+    <div class="logo-wrapper">
+        <img th:src="@{/images/logo2.png}" alt="Logo RateLikeAMuse" class="responsive-logo" />
+    </div>
+
+    <div class="container">
+        <h1 class="title">Filmes</h1>
+        <div class="card-list">
+
+            <div class="movie-card" th:each="movie : ${movies}" th:attr="data-title=${movie.nome}"> 
+                <div class="card-header">
+                    <h3 th:text="${movie.nome}">Nome do Filme</h3>
+                    <span class="year" th:text="${movie.ano}">2024</span> 
+                </div>
+                <div class="card-body"> 
+                    <div class="text-content"> 
+                        <p class="genre" th:text="${movie.genero}">Gênero</p> 
+
+                        <form th:action="@{/rate}" method="post" class="rating-form">
+                            <input type="hidden" name="movieId" th:value="${movie.id}" />
+                            <input type="hidden" name="userId" th:value="${#authentication.principal.id}" /> 
+                            <input type="hidden" name="score" class="rating-value" value="0" />
+
+                            <div class="rating-display"> 
+                                <span class="star" data-value="1">★</span> 
+                                <span class="star" data-value="2">★</span> 
+                                <span class="star" data-value="3">★</span> 
+                                <span class="star" data-value="4">★</span> 
+                                <span class="star" data-value="5">★</span> 
+                            </div>
+                            <button type="submit" class="rate-btn">Avaliar</button> 
+                        </form>
+                    </div>
+                    <img th:src="@{/images/poster-movies/{poster}(poster=${movie.posterUrl})}" 
+                         th:alt="${'Capa do filme ' + movie.nome}" 
+                         class="movie-poster">
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.movie-card').forEach(card => {
+            const stars = card.querySelectorAll('.star');
+            const ratingValueInput = card.querySelector('.rating-value'); 
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.dataset.value);
+                    
+                    ratingValueInput.value = rating;
+
+                    // Apenas atualiza as estrelas
+                    stars.forEach(s => {
+                        s.classList.toggle('filled', parseInt(s.dataset.value) <= rating);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

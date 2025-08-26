@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:if="${movie.id == null}">Novo Filme</title>
+    <title th:if="${movie.id != null}">Editar Filme</title>
+</head>
+<body>
+    <h1 th:if="${movie.id == null}">Cadastrar Novo Filme</h1>
+    <h1 th:if="${movie.id != null}">Editar Filme</h1>
+
+    <form th:object="${movie}" 
+          th:action="${movie.id == null} ? @{/movies} : @{/movies/{id}/edit(id=${movie.id})}" 
+          method="post">
+        
+        <input type="hidden" th:if="${movie.id != null}" th:field="*{id}" />
+
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" th:field="*{nome}" />
+        </div>
+        <div>
+            <label for="genero">Gênero:</label>
+            <input type="text" id="genero" th:field="*{genero}" />
+        </div>
+        
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
